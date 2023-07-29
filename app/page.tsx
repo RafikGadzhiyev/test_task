@@ -1,4 +1,4 @@
-import { Data } from "@/components/data";
+import { Data } from "@/components/Data";
 import { ICitizen, ICity } from "@/types";
 
 export default async function Home() {

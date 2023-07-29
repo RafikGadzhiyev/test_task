@@ -1,13 +1,8 @@
 "use client";
 import { FC, useState, SyntheticEvent } from "react";
 import { ICitizen, ICity } from "@/types";
-import {
-  connectCitizenWithStreet,
-  connectCountryWithCities,
-  connectDistrictsWithCities,
-  connectStreetWithDistrict,
-} from "@/utils/construct";
-import { Cities } from "./Cities";
+import { Constructor, connectCitizenWithStreet } from "@/utils/construct";
+import { List } from "./List";
 
 interface IDataProps {
   cities: ICity[];
@@ -16,10 +11,7 @@ interface IDataProps {
 
 export const Data: FC<IDataProps> = ({ cities, citizens }) => {
   const COUNTRY = "Россия";
-  const countryCities = connectCountryWithCities(COUNTRY, cities);
-  const citiesDistricts = connectDistrictsWithCities(citizens);
-  const districtsStreets = connectStreetWithDistrict(citizens);
-  const streetCitizen = connectCitizenWithStreet(citizens);
+  const constructedData = Constructor(cities, citizens);
 
   const allFields = ["country", "city", "district", "street", "citizen"];
 
@@ -39,7 +31,7 @@ export const Data: FC<IDataProps> = ({ cities, citizens }) => {
   return (
     <>
       <div>
-        <div className="flex items-center gap-5">
+        <div className="flex items-center gap-5 sticky top-0 bg-[rgb(0_0_0)] bg-opacity-50 backdrop-blur-sm z-[10000]">
           {allFields.map((field) => (
             <div key={field}>
               <label className="rounded-3xl p-2 bg-slate-600 my-4 flex items-center gap-1 capitalize cursor-pointer transition hover:bg-slate-500 active:bg-slate-700">
@@ -58,16 +50,12 @@ export const Data: FC<IDataProps> = ({ cities, citizens }) => {
             {COUNTRY}
           </h1>
         )}
-        <Cities
+        <List
           isIncluded={fields.includes("city")}
-          isCitizensIncluded={fields.includes("citizen")}
-          isDistrictIncluded={fields.includes("district")}
-          isStreetsIncluded={fields.includes("street")}
-          citiesDistricts={citiesDistricts}
-          districtsStreets={districtsStreets}
-          streetCitizen={streetCitizen}
-          values={countryCities[COUNTRY]}
-          cities={cities}
+          listKey="city"
+          values={constructedData.city[COUNTRY]}
+          fields={fields}
+          constructedData={constructedData}
         />
       </div>
     </>

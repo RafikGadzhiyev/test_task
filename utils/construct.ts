@@ -40,16 +40,24 @@ export const connectStreetWithDistrict = (citizens: ICitizen[]) => {
 };
 
 export const connectCitizenWithStreet = (citizens: ICitizen[]) => {
-  const result: { [key: string]: Set<{ id: number; name: string }> } = {};
+  const result: { [key: string]: Set<string> } = {};
   for (let citizen of citizens) {
     let street = (
       citizen.groups.find((group) => group.type === "street") as IGroup
     ).name;
 
-    if (!result[street])
-      result[street] = new Set([{ id: citizen.id, name: citizen.name }]);
-    else result[street].add({ id: citizen.id, name: citizen.name });
+    if (!result[street]) result[street] = new Set([citizen.name]);
+    else result[street].add(citizen.name);
   }
 
   return result;
+};
+
+export const Constructor = (cities: ICity[], citizens: ICitizen[]) => {
+  return {
+    city: connectCountryWithCities("Россия", cities),
+    district: connectDistrictsWithCities(citizens),
+    street: connectStreetWithDistrict(citizens),
+    citizen: connectCitizenWithStreet(citizens),
+  };
 };
